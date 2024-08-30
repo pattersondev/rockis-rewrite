@@ -43,3 +43,14 @@
   /* Adjust this value as needed */
   font-weight: bold;
 }
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.button {
+  font-weight: bold;
+  text-transform: none;
+}

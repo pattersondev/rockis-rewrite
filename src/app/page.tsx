@@ -3,6 +3,8 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 import { useState, useEffect } from 'react';
+import Link from "next/link";
+import { Button } from "@mui/material";
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
@@ -50,6 +52,13 @@ export default function Home() {
           height={300}
           layout="responsive"
         />
+      </div>
+      <div className={styles.buttonContainer}>
+        <Link href="/loser">
+          <Button variant="contained" color="primary" className={styles.button}>
+            See this week's fantasy loser
+          </Button>
+        </Link>
       </div>
     </main>
   );
