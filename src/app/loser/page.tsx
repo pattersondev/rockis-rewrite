@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react'
 import styles from './page.module.css'
 import { Matchup, Roster, SleeperService, User } from '@/services/sleeper-service'
 import { Card, CardContent, Typography, Avatar, CircularProgress } from '@mui/material'
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied'
+import { Wheel } from 'react-custom-roulette'
+import { useInterval } from '@/utils/useInterval'
+
 
 export default function Loser() {
 
@@ -14,6 +16,21 @@ export default function Loser() {
     const [rosters, setRosters] = useState<Roster[]>([])
     const [matchups, setMatchups] = useState<Matchup[]>([])
     const [loserUser, setLoserUser] = useState<Partial<User> | null>(null)
+    const [mustSpin, setMustSpin] = useState(false)
+    const [prizeNumber, setPrizeNumber] = useState(0)
+
+    const wheelOptions = [
+        { option: 'No Phone for day' },
+        { option: 'Chelada shotgun' },
+        { option: 'Murph' },
+        { option: 'Option 4' },
+        { option: 'Option 5' },
+        { option: 'Option 6' },
+        { option: 'Option 3' },
+        { option: 'Option 4' },
+        { option: 'Option 5' },
+        { option: 'Option 6' },
+    ]
 
     useEffect(() => {
         const sleeperService = new SleeperService()
@@ -51,6 +68,19 @@ export default function Loser() {
         }
     }, [weekLoser])
 
+    useInterval(() => {
+        const now = new Date()
+        if (now.getDay() === 2 && now.getHours() === 20 && now.getMinutes() === 0) {
+            spinWheel()
+        }
+    }, 10000) // Check every 10 seconds
+
+    const spinWheel = () => {
+        const newPrizeNumber = Math.floor(Math.random() * wheelOptions.length)
+        setPrizeNumber(newPrizeNumber)
+        setMustSpin(true)
+    }
+
     const calculateLoser = (matchups: Matchup[]) => {
         let lowestPoints = 0;
         let weekLow: any;
@@ -73,31 +103,51 @@ export default function Loser() {
         })
     }
 
-    console.log(loserUser)
-
     return (
-        <div className={styles.container}>
-            <Card className={styles.card}>
-                <CardContent>
-                    <Typography variant="h4" component="h1" gutterBottom className={styles.title}>
-                        Lowest Scoring Team of The Week
+        <div className={styles.body}>
+            <Typography variant="h4" component="h1" gutterBottom className={styles.header}>
+                Wheel spin Tuesday's at 8pm EST.
+            </Typography>
+            <div className={styles.container}>
+                <Card className={styles.card}>
+                    <CardContent>
+                        <Typography variant="h4" component="h1" gutterBottom className={styles.title}>
+                            Lowest Scoring Team of The Week
+                        </Typography>
+                        {loserUser ? (
+                            <div className={styles.loserInfo}>
+                                <Avatar
+                                    src={loserUser.avatar || undefined}
+                                    alt={loserUser.display_name || loserUser.username}
+                                    className={styles.avatar}
+                                />
+                                <Typography variant="h5" component="p" className={styles.loserName}>
+                                    {loserUser.display_name || loserUser.username}
+                                </Typography>
+                            </div>
+                        ) : (
+                            <CircularProgress className={styles.loader} />
+                        )}
+                    </CardContent>
+                </Card>
+                <div className={styles.wheelWrapper}>
+                    <Typography variant="h4" component="h2" gutterBottom className={styles.title}>
+                        Wheel of Punishment
                     </Typography>
-                    {loserUser ? (
-                        <div className={styles.loserInfo}>
-                            <Avatar
-                                src={loserUser.avatar || undefined}
-                                alt={loserUser.display_name || loserUser.username}
-                                className={styles.avatar}
-                            />
-                            <Typography variant="h5" component="p" className={styles.loserName}>
-                                {loserUser.display_name || loserUser.username}
-                            </Typography>
-                        </div>
-                    ) : (
-                        <CircularProgress className={styles.loader} />
-                    )}
-                </CardContent>
-            </Card>
+                    <div className={styles.wheelContainer}>
+                        <Wheel
+                            mustStartSpinning={mustSpin}
+                            prizeNumber={prizeNumber}
+                            data={wheelOptions}
+                            backgroundColors={['#FF5733', '#33FF57', '#3357FF', '#F333FF', '#33FFF3', '#F3FF33']}
+                            onStopSpinning={() => {
+                                setMustSpin(false)
+                                console.log("Wheel stopped on:", wheelOptions[prizeNumber].option)
+                            }}
+                        />
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }
