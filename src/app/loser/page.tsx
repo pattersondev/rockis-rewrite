@@ -4,9 +4,14 @@ import { useState, useEffect } from 'react'
 import styles from './page.module.css'
 import { Matchup, Roster, SleeperService, User } from '@/services/sleeper-service'
 import { Card, CardContent, Typography, Avatar, CircularProgress } from '@mui/material'
-import { Wheel } from 'react-custom-roulette'
 import { useInterval } from '@/utils/useInterval'
+import dynamic from 'next/dynamic'
 
+// Dynamically import the Wheel component with SSR disabled
+const Wheel = dynamic(
+    () => import('react-custom-roulette').then((mod) => mod.Wheel),
+    { ssr: false }
+)
 
 export default function Loser() {
 
@@ -135,16 +140,18 @@ export default function Loser() {
                         Wheel of Punishment
                     </Typography>
                     <div className={styles.wheelContainer}>
-                        <Wheel
-                            mustStartSpinning={mustSpin}
-                            prizeNumber={prizeNumber}
-                            data={wheelOptions}
-                            backgroundColors={['#FF5733', '#33FF57', '#3357FF', '#F333FF', '#33FFF3', '#F3FF33']}
-                            onStopSpinning={() => {
-                                setMustSpin(false)
-                                console.log("Wheel stopped on:", wheelOptions[prizeNumber].option)
-                            }}
-                        />
+                        {typeof window !== 'undefined' && (
+                            <Wheel
+                                mustStartSpinning={mustSpin}
+                                prizeNumber={prizeNumber}
+                                data={wheelOptions}
+                                backgroundColors={['#4ecdc4', '#45b7d1', '#ff6b6b', '#f7fff7']}
+                                onStopSpinning={() => {
+                                    setMustSpin(false)
+                                    console.log("Wheel stopped on:", wheelOptions[prizeNumber].option)
+                                }}
+                            />
+                        )}
                     </div>
                 </div>
             </div>
