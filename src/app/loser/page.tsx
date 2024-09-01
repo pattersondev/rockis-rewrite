@@ -73,12 +73,22 @@ export default function Loser() {
         }
     }, [weekLoser])
 
+    // useInterval(() => {
+    //     const now = new Date()
+    //     if (now.getDay() === 2 && now.getHours() === 20 && now.getMinutes() === 0) {
+    //         spinWheel()
+    //     }
+    // }, 10000) // Check every 10 seconds
+
+
     useInterval(() => {
-        const now = new Date()
-        if (now.getDay() === 2 && now.getHours() === 20 && now.getMinutes() === 0) {
+        const now = new Date();
+
+        // Check if it's Saturday (6) at 20:35 (8:35 PM)
+        if (now.getDay() === 6 && now.getHours() === 20 && now.getMinutes() === 35) {
             spinWheel()
         }
-    }, 10000) // Check every 10 seconds
+    }, 10000) // Check every minute instead of every 10 seconds
 
     const spinWheel = () => {
         const newPrizeNumber = Math.floor(Math.random() * wheelOptions.length)
