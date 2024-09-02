@@ -24,6 +24,7 @@ export default function Loser() {
     const [loserUser, setLoserUser] = useState<Partial<User> | null>(null)
     const [mustSpin, setMustSpin] = useState(false)
     const [prizeNumber, setPrizeNumber] = useState(0)
+    const [punishment, setPunishment] = useState<any | null>(null)
 
     const wheelOptions = [
         { option: 'No Phone for day' },
@@ -155,9 +156,14 @@ export default function Loser() {
                                 backgroundColors={['#4ecdc4', '#45b7d1', '#ff6b6b', '#f7fff7']}
                                 onStopSpinning={() => {
                                     setMustSpin(false)
-                                    console.log("Wheel stopped on:", wheelOptions[prizeNumber].option)
+                                    setPunishment(wheelOptions[prizeNumber].option)
                                 }}
                             />
+                        )}
+                        {punishment && (
+                            <Typography variant="h5" component="p" className={styles.punishment}>
+                                {punishment}
+                            </Typography>
                         )}
                     </div>
                 </div>

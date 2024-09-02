@@ -144,3 +144,10 @@
 }
 
 /* Off-white */
+.punishment {
+    text-align: center;
+    margin-top: 1rem;
+    color: #ff6b6b;
+    /* Coral color for punishment */
+    font-weight: bold;
+}
