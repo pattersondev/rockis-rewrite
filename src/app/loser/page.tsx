@@ -6,6 +6,7 @@ import { Matchup, Roster, SleeperService, User } from '@/services/sleeper-servic
 import { Card, CardContent, Typography, Avatar, CircularProgress } from '@mui/material'
 import { useInterval } from '@/utils/useInterval'
 import dynamic from 'next/dynamic'
+import { RandomService } from '@/services/random-service'
 
 // Dynamically import the Wheel component with SSR disabled
 const Wheel = dynamic(
@@ -28,13 +29,8 @@ export default function Loser() {
         { option: 'No Phone for day' },
         { option: 'Chelada shotgun' },
         { option: 'Murph' },
-        { option: 'Option 4' },
-        { option: 'Option 5' },
-        { option: 'Option 6' },
-        { option: 'Option 3' },
-        { option: 'Option 4' },
-        { option: 'Option 5' },
-        { option: 'Option 6' },
+        { option: '5k' },
+        { option: 'Free Spot' },
     ]
 
     useEffect(() => {
@@ -75,15 +71,26 @@ export default function Loser() {
 
     useInterval(() => {
         const now = new Date()
+        if (now.getDay() === 2 && now.getHours() === 19 && now.getMinutes() === 40) {
+            const randomService = new RandomService();
+            randomService.setRandomNumber(Math.floor(Math.random() * wheelOptions.length));
+            console.log("Random number set:", Math.floor(Math.random() * wheelOptions.length));
+        }
+    }, 10000)
+
+    useInterval(() => {
+        const now = new Date()
         if (now.getDay() === 2 && now.getHours() === 20 && now.getMinutes() === 0) {
             spinWheel()
         }
     }, 10000) // Check every 10 seconds
 
     const spinWheel = () => {
-        const newPrizeNumber = Math.floor(Math.random() * wheelOptions.length)
-        setPrizeNumber(newPrizeNumber)
-        setMustSpin(true)
+        const randomService = new RandomService();
+        randomService.getRandomNumber().then((number: number) => {
+            setPrizeNumber(number)
+            setMustSpin(true)
+        })
     }
 
     const calculateLoser = (matchups: Matchup[]) => {
@@ -137,7 +144,7 @@ export default function Loser() {
                 </Card>
                 <div className={styles.wheelWrapper}>
                     <Typography variant="h4" component="h2" gutterBottom className={styles.title}>
-                        Wheel of Punishment
+                        Wheel of Squeal
                     </Typography>
                     <div className={styles.wheelContainer}>
                         {typeof window !== 'undefined' && (
