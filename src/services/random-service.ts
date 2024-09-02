@@ -2,7 +2,7 @@ export class RandomService {
     private readonly baseUrl: string;
 
     constructor() {
-        this.baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
+        this.baseUrl = process.env.API_URL || 'http://localhost:3333';
     }
 
     getRandomNumber = async (): Promise<number> => {
