@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import styles from './page.module.css'
 import { Matchup, Roster, SleeperService, User } from '@/services/sleeper-service'
 import { Card, CardContent, Typography, Avatar, CircularProgress } from '@mui/material'
@@ -25,6 +25,8 @@ export default function Loser() {
     const [mustSpin, setMustSpin] = useState(false)
     const [prizeNumber, setPrizeNumber] = useState(0)
     const [punishment, setPunishment] = useState<any | null>(null)
+    const [hasSpun, setHasSpun] = useState(false)
+    const spinWheelRef = useRef<() => void>()
 
     const wheelOptions = [
         { option: 'No Phone for day' },
@@ -71,9 +73,22 @@ export default function Loser() {
         }
     }, [weekLoser])
 
+    useEffect(() => {
+        spinWheelRef.current = () => {
+            if (hasSpun) return;
+            const randomService = new RandomService();
+            randomService.getRandomNumber().then((number: number) => {
+                console.log("Random number:", number);
+                setPrizeNumber(number)
+                setMustSpin(true)
+                setHasSpun(true)
+            })
+        }
+    }, [hasSpun])
+
     useInterval(() => {
         const now = new Date()
-        if (now.getDay() === 3 && now.getHours() === 11 && now.getMinutes() === 50) {
+        if (now.getDay() === 2 && now.getHours() === 19 && now.getMinutes() === 59) {
             const randomService = new RandomService();
             randomService.setRandomNumber(Math.floor(Math.random() * wheelOptions.length));
             console.log("Random number set:", Math.floor(Math.random() * wheelOptions.length));
@@ -82,17 +97,13 @@ export default function Loser() {
 
     useInterval(() => {
         const now = new Date()
-        if (now.getDay() === 3 && now.getHours() === 11 && now.getMinutes() === 51) {
-            spinWheel()
+        if (now.getDay() === 2 && now.getHours() === 20 && now.getMinutes() === 0) {
+            spinWheelRef.current?.()
         }
-    }, 10000) // Check every 10 seconds
+    }, 10000)
 
     const spinWheel = () => {
-        const randomService = new RandomService();
-        randomService.getRandomNumber().then((number: number) => {
-            setPrizeNumber(number)
-            setMustSpin(true)
-        })
+        spinWheelRef.current?.()
     }
 
     const calculateLoser = (matchups: Matchup[]) => {

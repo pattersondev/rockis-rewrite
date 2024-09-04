@@ -8,7 +8,7 @@ export class RandomService {
     getRandomNumber = async (): Promise<number> => {
         const response = await fetch(`${this.baseUrl}/number`);
         const data = await response.json();
-        return data.number;
+        return data.value;
     }
 
     setRandomNumber = async (number: number): Promise<void> => {
