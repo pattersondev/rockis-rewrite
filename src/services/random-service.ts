@@ -17,7 +17,7 @@ export class RandomService {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ number }),
+            body: JSON.stringify({ value: number }),
         });
     }
 }
