@@ -157,7 +157,7 @@ export default function Loser() {
                                 backgroundColors={['#4ecdc4', '#45b7d1', '#ff6b6b', '#f7fff7']}
                                 onStopSpinning={() => {
                                     setMustSpin(false)
-                                    setPunishment(wheelOptions[prizeNumber].option)
+                                    setPunishment(wheelOptions[prizeNumber]?.option)
                                 }}
                             />
                         )}
