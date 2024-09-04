@@ -32,6 +32,7 @@ export default function Loser() {
         { option: 'Murph' },
         { option: '5k' },
         { option: 'Free Spot' },
+        { option: 'High Scorer Glaze' },
     ]
 
     useEffect(() => {
