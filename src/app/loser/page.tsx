@@ -37,6 +37,7 @@ export default function Loser() {
         { option: 'High Scorer Glaze' },
         { option: 'Muncy Snap Streak' },
         { option: 'Bootlegger' },
+        { option: 'TikTok Dance' },
     ]
 
     useEffect(() => {
