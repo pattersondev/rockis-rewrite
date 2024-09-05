@@ -10,7 +10,7 @@ export default function Home() {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   function calculateTimeLeft() {
-    const targetDate = new Date("2024-09-07T23:59:00");
+    const targetDate = new Date("2024-09-14T23:59:00");
     const difference = +targetDate - +new Date();
 
     if (difference > 0) {
