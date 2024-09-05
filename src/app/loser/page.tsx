@@ -35,6 +35,8 @@ export default function Loser() {
         { option: '5k' },
         { option: 'Free Spot' },
         { option: 'High Scorer Glaze' },
+        { option: 'Muncy Snap Streak' },
+        { option: 'Bootlegger' },
     ]
 
     useEffect(() => {
