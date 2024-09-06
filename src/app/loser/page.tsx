@@ -26,7 +26,7 @@ export default function Loser() {
     const [prizeNumber, setPrizeNumber] = useState(0)
     const [punishment, setPunishment] = useState<any | null>(null)
     const [hasSpun, setHasSpun] = useState(false)
-    const spinWheelRef = useRef<() => void>()
+    const spinWheelRef = useRef<() => void>();
 
     const wheelOptions = [
         { option: 'No Phone for day' },
@@ -42,15 +42,17 @@ export default function Loser() {
 
     useEffect(() => {
         const sleeperService = new SleeperService()
-
+        const randomService = new RandomService()
         Promise.all([
             sleeperService.getMatchups(),
             sleeperService.getUsersInLeague(),
-            sleeperService.getRostersForUsers()
-        ]).then(([matchupsData, usersData, rostersData]) => {
+            sleeperService.getRostersForUsers(),
+            randomService.getRandomNumber()
+        ]).then(([matchupsData, usersData, rostersData, randomNumber]) => {
             setMatchups(matchupsData)
             setUsers(usersData)
             setRosters(rostersData)
+            setPunishment(wheelOptions[randomNumber].option)
         })
     }, [])
 
@@ -78,8 +80,8 @@ export default function Loser() {
 
     useEffect(() => {
         spinWheelRef.current = () => {
+            const randomService = new RandomService()
             if (hasSpun) return;
-            const randomService = new RandomService();
             randomService.getRandomNumber().then((number: number) => {
                 console.log("Random number:", number);
                 setPrizeNumber(number)
