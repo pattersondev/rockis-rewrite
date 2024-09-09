@@ -112,10 +112,11 @@ export default function Loser() {
     }
 
     const calculateLoser = (matchups: Matchup[]) => {
-        let lowestPoints = 0;
+        let lowestPoints = 1000;
         let weekLow: any;
         matchups.forEach(matchup => {
-            if (matchup.points < 1) {
+            console.log(matchup)
+            if (matchup.points <= lowestPoints) {
                 lowestPoints = matchup.points
                 weekLow = matchup
             }
