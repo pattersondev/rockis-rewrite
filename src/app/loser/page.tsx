@@ -115,7 +115,6 @@ export default function Loser() {
         let lowestPoints = 1000;
         let weekLow: any;
         matchups.forEach(matchup => {
-            console.log(matchup)
             if (matchup.points <= lowestPoints) {
                 lowestPoints = matchup.points
                 weekLow = matchup
@@ -147,14 +146,18 @@ export default function Loser() {
                         </Typography>
                         {loserUser ? (
                             <div className={styles.loserInfo}>
-                                <Avatar
-                                    src={loserUser.avatar || undefined}
-                                    alt={loserUser.display_name || loserUser.username}
-                                    className={styles.avatar}
-                                />
-                                <Typography variant="h5" component="p" className={styles.loserName}>
-                                    {loserUser.display_name || loserUser.username}
-                                </Typography>
+                                <span className={styles.laughingFace}>🤣👉</span>
+                                <div className={styles.loserAvatar}>
+                                    <Avatar
+                                        src={loserUser.avatar || undefined}
+                                        alt={loserUser.display_name || loserUser.username}
+                                        className={styles.avatar}
+                                    />
+                                    <Typography variant="h5" component="p" className={styles.loserName}>
+                                        {loserUser.display_name || loserUser.username}
+                                    </Typography>
+                                </div>
+                                <span className={styles.laughingFace}>👈🤣</span>
                             </div>
                         ) : (
                             <CircularProgress className={styles.loader} />
