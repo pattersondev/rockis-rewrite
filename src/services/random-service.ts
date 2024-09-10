@@ -2,8 +2,8 @@ export class RandomService {
     private readonly baseUrl: string;
 
     constructor() {
-        const apiUrl = 'http://138.88.10.70:3333';
-        this.baseUrl = apiUrl;
+        // Use HTTPS and the direct IP address
+        this.baseUrl = 'https://138.88.10.70:3333';
         console.log('RandomService baseUrl:', this.baseUrl);
     }
 
@@ -22,12 +22,19 @@ export class RandomService {
     }
 
     setRandomNumber = async (number: number): Promise<void> => {
-        await fetch(`${this.baseUrl}/number`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ value: number }),
-        });
+        try {
+            const response = await fetch(`${this.baseUrl}/number`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ value: number }),
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Error setting random number:', error);
+        }
     }
 }
