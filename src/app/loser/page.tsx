@@ -54,7 +54,9 @@ export default function Loser() {
             setMatchups(matchupsData)
             setUsers(usersData)
             setRosters(rostersData)
-            setPunishment(wheelOptions[randomNumber].option)
+            if (randomNumber) {
+                setPunishment(wheelOptions[randomNumber]?.option)
+            }
         })
     }, [])
 
