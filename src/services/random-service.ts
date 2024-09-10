@@ -2,8 +2,8 @@ export class RandomService {
     private readonly baseUrl: string;
 
     constructor() {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://138.88.10.70:3333';
-        this.baseUrl = new URL(apiUrl).origin;
+        const apiUrl = 'http://138.88.10.70:3333';
+        this.baseUrl = apiUrl;
         console.log('RandomService baseUrl:', this.baseUrl);
     }
 
