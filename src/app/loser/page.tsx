@@ -7,6 +7,7 @@ import { Card, CardContent, Typography, Avatar, CircularProgress } from '@mui/ma
 import { useInterval } from '@/utils/useInterval'
 import dynamic from 'next/dynamic'
 import { RandomService } from '@/services/random-service'
+import ClientOnly from '@/components/client-only'
 
 // Dynamically import the Wheel component with SSR disabled
 const Wheel = dynamic(
@@ -26,6 +27,7 @@ export default function Loser() {
     const [prizeNumber, setPrizeNumber] = useState(0)
     const [punishment, setPunishment] = useState<any | null>(null)
     const [hasSpun, setHasSpun] = useState(false)
+    const [hasSetRandomNumber, setHasSetRandomNumber] = useState(false)
     const spinWheelRef = useRef<() => void>();
 
     const wheelOptions = [
@@ -93,16 +95,17 @@ export default function Loser() {
 
     useInterval(() => {
         const now = new Date()
-        if (now.getDay() === 2 && now.getHours() === 19 && now.getMinutes() === 59) {
+        if (now.getDay() === 2 && now.getHours() === 23 && now.getMinutes() === 29) {
             const randomService = new RandomService();
             randomService.setRandomNumber(Math.floor(Math.random() * wheelOptions.length));
             console.log("Random number set:", Math.floor(Math.random() * wheelOptions.length));
+            setHasSetRandomNumber(true)
         }
     }, 10000)
 
     useInterval(() => {
         const now = new Date()
-        if (now.getDay() === 2 && now.getHours() === 20 && now.getMinutes() === 0) {
+        if (now.getDay() === 2 && now.getHours() === 23 && now.getMinutes() === 30) {
             spinWheelRef.current?.()
         }
     }, 10000)
@@ -169,7 +172,7 @@ export default function Loser() {
                         Wheel of Squeal
                     </Typography>
                     <div className={styles.wheelContainer}>
-                        {typeof window !== 'undefined' && (
+                        <ClientOnly>
                             <Wheel
                                 mustStartSpinning={mustSpin}
                                 prizeNumber={prizeNumber}
@@ -180,7 +183,7 @@ export default function Loser() {
                                     setPunishment(wheelOptions[prizeNumber]?.option)
                                 }}
                             />
-                        )}
+                        </ClientOnly>
                         {punishment && (
                             <Typography variant="h5" component="p" className={styles.punishment}>
                                 {punishment}
