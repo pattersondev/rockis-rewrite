@@ -54,6 +54,7 @@ export default function Loser() {
             setMatchups(matchupsData)
             setUsers(usersData)
             setRosters(rostersData)
+            console.log("Random number:", randomNumber);
             if (randomNumber) {
                 setPunishment(wheelOptions[randomNumber]?.option)
             }
@@ -87,6 +88,7 @@ export default function Loser() {
             const randomService = new RandomService()
             if (hasSpun) return;
             randomService.getRandomNumber().then((number: number) => {
+                console.log("Random number:", number);
                 if (number) {
                     setPrizeNumber(number)
                     setMustSpin(true)

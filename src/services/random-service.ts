@@ -14,7 +14,7 @@ export class RandomService {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            return data.number;
+            return data.value;
         } catch (error) {
             console.error('Error fetching random number:', error);
             return Math.floor(Math.random() * 9);
