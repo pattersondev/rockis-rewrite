@@ -85,10 +85,11 @@ export default function Loser() {
             const randomService = new RandomService()
             if (hasSpun) return;
             randomService.getRandomNumber().then((number: number) => {
-                console.log("Random number:", number);
-                setPrizeNumber(number)
-                setMustSpin(true)
-                setHasSpun(true)
+                if (number) {
+                    setPrizeNumber(number)
+                    setMustSpin(true)
+                    setHasSpun(true)
+                }
             })
         }
     }, [hasSpun])
