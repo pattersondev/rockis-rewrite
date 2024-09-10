@@ -3,7 +3,7 @@ export class RandomService {
 
     constructor() {
         // Use HTTPS and the direct IP address
-        this.baseUrl = 'https://138.88.10.70:3333';
+        this.baseUrl = 'https://rockis-backend.onrender.com';
         console.log('RandomService baseUrl:', this.baseUrl);
     }
 
