@@ -100,7 +100,7 @@ export default function Loser() {
 
     useInterval(() => {
         const now = new Date()
-        if (now.getDay() === 1 && now.getHours() === 23 && now.getMinutes() === 29) {
+        if (now.getDay() === 1 && now.getHours() === 23 && now.getMinutes() === 9) {
             const randomService = new RandomService();
             randomService.setRandomNumber(Math.floor(Math.random() * wheelOptions.length));
             console.log("Random number set:", Math.floor(Math.random() * wheelOptions.length));
@@ -110,7 +110,7 @@ export default function Loser() {
 
     useInterval(() => {
         const now = new Date()
-        if (now.getDay() === 1 && now.getHours() === 23 && now.getMinutes() === 30) {
+        if (now.getDay() === 1 && now.getHours() === 23 && now.getMinutes() === 10) {
             spinWheelRef.current?.()
         }
     }, 10000)
