@@ -27,7 +27,6 @@ export default function Loser() {
     const [prizeNumber, setPrizeNumber] = useState(0)
     const [punishment, setPunishment] = useState<any | null>(null)
     const [hasSpun, setHasSpun] = useState(false)
-    const [hasSetRandomNumber, setHasSetRandomNumber] = useState(false)
     const spinWheelRef = useRef<() => void>();
 
     const wheelOptions = [
@@ -97,16 +96,6 @@ export default function Loser() {
             })
         }
     }, [hasSpun])
-
-    useInterval(() => {
-        const now = new Date()
-        if (now.getDay() === 1 && now.getHours() === 23 && now.getMinutes() === 9) {
-            const randomService = new RandomService();
-            randomService.setRandomNumber(Math.floor(Math.random() * wheelOptions.length));
-            console.log("Random number set:", Math.floor(Math.random() * wheelOptions.length));
-            setHasSetRandomNumber(true)
-        }
-    }, 10000)
 
     useInterval(() => {
         const now = new Date()
