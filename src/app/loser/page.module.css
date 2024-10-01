@@ -26,7 +26,7 @@
 
 .card {
     width: 100%;
-    background-color: #16213e;
+    background-color: #16213e !important;
     /* Darker blue background for cards */
     border: 1px solid #4ecdc4;
     /* Teal border */
