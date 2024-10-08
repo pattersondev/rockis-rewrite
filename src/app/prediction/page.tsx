@@ -8,6 +8,7 @@ import {
   LeagueSchedule,
   ScheduleMatchup,
   Matchup,
+  League,
 } from "@/services/sleeper-service";
 import {
   Chart as ChartJS,
@@ -34,6 +35,7 @@ interface TeamPrediction {
   name: string;
   playoffChance: number;
   superBowlChance: number;
+  division: number;
 }
 
 const PredictionPage: React.FC = () => {
@@ -43,9 +45,14 @@ const PredictionPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const sleeperService = new SleeperService();
-      const { users, rosters, matchups } =
+      const { users, rosters, matchups, league } =
         await sleeperService.getAllLeagueData();
-      const teamPredictions = calculatePredictions(users, rosters, matchups);
+      const teamPredictions = calculatePredictions(
+        users,
+        rosters,
+        matchups,
+        league
+      );
       setPredictions(teamPredictions);
       setLoading(false);
     };
@@ -56,56 +63,107 @@ const PredictionPage: React.FC = () => {
   const calculatePredictions = (
     users: User[],
     rosters: Roster[],
-    matchups: Matchup[][]
+    matchups: Matchup[][],
+    league: League
   ): TeamPrediction[] => {
     const totalTeams = users.length;
-    const playoffSpots = Math.floor(totalTeams / 2);
+    const divisions = league.settings.divisions;
+    const teamsPerDivision = totalTeams / divisions;
+    const playoffSpotsPerDivision = 3;
     const currentWeek = new SleeperService().getCurrentNFLWeek();
 
     const teamStrengths = calculateTeamStrengths(rosters, matchups);
     const maxStrength = Math.max(...Object.values(teamStrengths));
 
-    return users
-      .map((user) => {
-        const roster = rosters.find((r) => r.owner_id === user.user_id);
-        if (!roster)
-          return {
-            name: user.display_name,
-            playoffChance: 0,
-            superBowlChance: 0,
-          };
-
-        const remainingGames = 17 - currentWeek + 1; // Assuming a 17-week season
-        const gamesPlayed = currentWeek - 1;
-        const currentWinPercentage = roster.settings.wins / gamesPlayed;
-
-        const relativeStrength = teamStrengths[roster.roster_id] / maxStrength;
-        const projectedWinPercentage =
-          (currentWinPercentage + relativeStrength) / 2;
-
-        const projectedWins = projectedWinPercentage * remainingGames;
-        const totalProjectedWins = roster.settings.wins + projectedWins;
-        const totalGames = 17; // Total games in a season
-
-        const finalProjectedWinPercentage = totalProjectedWins / totalGames;
-
-        // Adjust playoff chance based on current standing and projected finish
-        const playoffChance = Math.min(
-          finalProjectedWinPercentage ** 2 * (playoffSpots / totalTeams) * 100,
-          100
-        );
-
-        // Further reduce Super Bowl chances for underperforming teams
-        const superBowlChance =
-          (playoffChance / 100) * relativeStrength ** 2 * (100 / playoffSpots);
-
+    const teamPredictions = users.map((user, index) => {
+      const roster = rosters.find((r) => r.owner_id === user.user_id);
+      if (!roster)
         return {
           name: user.display_name,
+          playoffChance: 0,
+          superBowlChance: 0,
+          division: Math.floor(index / teamsPerDivision) + 1,
+        };
+
+      const remainingGames = 17 - currentWeek + 1;
+      const gamesPlayed = currentWeek - 1;
+      const currentWinPercentage = roster.settings.wins / gamesPlayed;
+
+      const relativeStrength = teamStrengths[roster.roster_id] / maxStrength;
+      const projectedWinPercentage =
+        (currentWinPercentage + relativeStrength) / 2;
+
+      const projectedWins = projectedWinPercentage * remainingGames;
+      const totalProjectedWins = roster.settings.wins + projectedWins;
+      const totalGames = 17;
+
+      const finalProjectedWinPercentage = totalProjectedWins / totalGames;
+
+      return {
+        name: user.display_name,
+        projectedWins: totalProjectedWins,
+        strength: relativeStrength,
+        division: Math.floor(index / teamsPerDivision) + 1,
+        finalProjectedWinPercentage,
+      };
+    });
+
+    // Calculate playoff chances based on division rankings
+    const divisionRankings = calculateDivisionRankings(teamPredictions);
+
+    return teamPredictions
+      .map((team) => {
+        const divisionRank =
+          divisionRankings[team.division].findIndex(
+            (t) => t.name === team.name
+          ) + 1;
+
+        // Calculate playoff chance based on division rank
+        let playoffChance;
+        if (divisionRank <= playoffSpotsPerDivision) {
+          playoffChance = 100 - (divisionRank - 1) * 10; // 100% for 1st, 90% for 2nd, 80% for 3rd
+        } else {
+          playoffChance = Math.max(
+            0,
+            70 - (divisionRank - playoffSpotsPerDivision) * 20
+          ); // Decreasing chances for lower ranks
+        }
+
+        // Adjust playoff chance based on projected win percentage
+        if (team.finalProjectedWinPercentage !== undefined) {
+          playoffChance *= team.finalProjectedWinPercentage;
+        }
+        const superBowlChance =
+          team.strength !== undefined
+            ? (playoffChance * team.strength ** 2) / divisions
+            : 0;
+
+        return {
+          name: team.name,
           playoffChance: Number(playoffChance.toFixed(2)),
           superBowlChance: Number(superBowlChance.toFixed(2)),
+          division: team.division,
         };
       })
       .sort((a, b) => b.playoffChance - a.playoffChance);
+  };
+
+  const calculateDivisionRankings = (
+    teams: any[]
+  ): { [division: number]: any[] } => {
+    const divisions: { [division: number]: any[] } = {};
+    teams.forEach((team) => {
+      if (!divisions[team.division]) divisions[team.division] = [];
+      divisions[team.division].push(team);
+    });
+
+    Object.keys(divisions).forEach((division) => {
+      divisions[Number(division)].sort(
+        (a, b) => b.projectedWins - a.projectedWins
+      );
+    });
+
+    return divisions;
   };
 
   const calculateTeamStrengths = (

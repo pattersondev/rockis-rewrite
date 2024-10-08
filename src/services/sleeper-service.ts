@@ -49,6 +49,17 @@ export interface LeagueSchedule {
     [week: string]: ScheduleMatchup[];
 }
 
+export interface League {
+    total_rosters: number;
+    status: string;
+    sport: string;
+    settings: {
+        divisions: number;
+        // ... other settings
+    };
+    // ... other properties
+}
+
 export class SleeperService {
     private readonly baseUrl = 'https://api.sleeper.app/v1';
     private readonly leagueId: string = '1050653620783505408';
@@ -103,17 +114,25 @@ export class SleeperService {
         return data;
     }
 
-    getAllLeagueData = async (): Promise<{ users: User[], rosters: Roster[], matchups: Matchup[][] }> => {
-        const users = await this.getUsersInLeague();
-        const rosters = await this.getRostersForUsers();
+    getLeagueInfo = async (): Promise<League> => {
+        const response = await fetch(`${this.baseUrl}/league/${this.leagueId}`);
+        const data = await response.json();
+        return data;
+    }
+
+    getAllLeagueData = async (): Promise<{ users: User[], rosters: Roster[], matchups: Matchup[][], league: League }> => {
+        const [users, rosters, league] = await Promise.all([
+            this.getUsersInLeague(),
+            this.getRostersForUsers(),
+            this.getLeagueInfo()
+        ]);
         const currentWeek = this.getCurrentNFLWeek();
         
-        // Fetch matchups for all weeks up to the current week
         const matchupsPromises = Array.from({ length: currentWeek }, (_, i) => 
             this.getMatchupsForWeek(i + 1)
         );
         const matchups = await Promise.all(matchupsPromises);
 
-        return { users, rosters, matchups };
+        return { users, rosters, matchups, league };
     }
 }
