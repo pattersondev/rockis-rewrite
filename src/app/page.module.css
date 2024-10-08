@@ -47,10 +47,12 @@
 .buttonContainer {
   display: flex;
   justify-content: center;
+  gap: 1rem;
   margin-top: 2rem;
 }
 
 .button {
   font-weight: bold;
   text-transform: none;
+  height: 50px; 
 }

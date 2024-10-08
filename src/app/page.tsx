@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
 import Image from "next/image";
 import styles from "./page.module.css";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@mui/material";
 
@@ -38,7 +38,8 @@ export default function Home() {
       <div className={`${styles.countdownBanner} ${styles.largerCountdown}`}>
         {timeLeft ? (
           <span>
-            {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
+            {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m{" "}
+            {timeLeft.seconds}s
           </span>
         ) : (
           <span>Time's up!</span>
@@ -46,7 +47,7 @@ export default function Home() {
       </div>
       <div className={styles.imageContainer}>
         <Image
-          src='/rhabib.jpg'
+          src="/rhabib.jpg"
           alt="Rhabib"
           width={300}
           height={300}
@@ -56,7 +57,17 @@ export default function Home() {
       <div className={styles.buttonContainer}>
         <Link href="/loser">
           <Button variant="contained" color="primary" className={styles.button}>
-            See this week's fantasy loser
+            Wheel Spin
+          </Button>
+        </Link>
+        <Link href="/prediction">
+          <Button variant="contained" color="primary" className={styles.button}>
+            Projections
+          </Button>
+        </Link>
+        <Link href="/horse">
+          <Button variant="contained" color="primary" className={styles.button}>
+            Horse Race
           </Button>
         </Link>
       </div>
