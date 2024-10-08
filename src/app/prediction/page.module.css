@@ -1,0 +1,76 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.loading {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-top: 2rem;
+}
+
+.chartsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-bottom: 2rem;
+}
+
+.chartWrapper {
+    width: 100%;
+    max-width: 800px;  /* Increased from 500px to accommodate horizontal bars */
+    margin-bottom: 2rem;
+    height: 400px;  /* Set a fixed height for the chart */
+}
+
+.chartWrapper h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.tableContainer {
+    overflow-x: auto;
+}
+
+.predictionTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+}
+
+.predictionTable th,
+.predictionTable td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.predictionTable th {
+    background-color: #f7fafc;
+    font-weight: bold;
+}
+
+.predictionTable tr:nth-child(even) {
+    background-color: #f7fafc;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .chartWrapper {
+        width: 100%;
+    }
+
+    .predictionTable th,
+    .predictionTable td {
+        padding: 0.5rem;
+    }
+}
