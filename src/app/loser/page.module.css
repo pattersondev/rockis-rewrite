@@ -5,164 +5,133 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    background-color: #1a1a2e !important;
-    /* Dark blue background */
-    color: #e0e0e0;
-    /* Light gray text color */
-}
-
-.header {
+    background-color: var(--background-color);
+    color: var(--text-color);
+  }
+  
+  .header {
     text-align: center;
     margin-bottom: 2rem;
-    color: #4ecdc4;
-    /* Teal for header */
-}
-
-.container {
+    color: var(--accent-color);
+  }
+  
+  .container {
     display: flex;
     flex-direction: column;
     gap: 2rem;
-}
-
-.card {
+  }
+  
+  .card {
     width: 100%;
-    background-color: #16213e !important;
-    /* Darker blue background for cards */
-    border: 1px solid #4ecdc4;
-    /* Teal border */
+    background-color: #1e1e1e;
+    border: 1px solid var(--accent-color);
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.wheelWrapper {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .wheelWrapper {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #0f3460;
-    /* Dark blue background */
+    background-color: #1e1e1e;
     border-radius: 8px;
-}
-
-.wheelContainer {
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .wheelContainer {
     max-width: 500px;
     width: 100%;
-}
-
-.title {
+  }
+  
+  .title {
     text-align: center;
     margin-bottom: 1rem;
     padding: 1rem;
-    color: #4ecdc4;
-    /* Teal for titles */
-}
-
-.loserInfo {
+    color: var(--accent-color);
+  }
+  
+  .loserInfo {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    background-color: #16213e;
-    /* Darker blue background */
+    background-color: #1e1e1e;
     padding: 1rem;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.loserAvatar {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .loserAvatar {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-.avatar {
+  }
+  
+  .avatar {
     width: 100px;
     height: 100px;
     border: 3px solid #e94560;
-    /* Brighter red border for avatar */
     border-radius: 50%;
-}
-
-.loserName {
+  }
+  
+  .loserName {
     text-align: center;
     color: #e94560;
-    /* Brighter red color for loser name */
     font-weight: bold;
-}
-
-.loader {
+  }
+  
+  .loader {
     display: block;
     margin: 0 auto;
-    color: #4ecdc4;
-    /* Teal for loader */
-}
-
-@media (max-width: 768px) {
-    .body {
-        padding: 1rem;
-    }
-
-    .header {
-        font-size: 1.5rem;
-    }
-
-    .card,
-    .wheelWrapper {
-        padding: 1rem;
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-    }
-
-    .title {
-        font-size: 1.2rem;
-    }
-
-    .avatar {
-        width: 80px;
-        height: 80px;
-    }
-
-    .loserName {
-        font-size: 1rem;
-    }
-
-    .wheelContainer {
-        max-width: 100%;
-        width: 100%;
-    }
-}
-
-/* Add these new classes for wheel panel colors */
-.wheelPanel1 {
-    background-color: #4ecdc4;
-}
-
-/* Teal */
-.wheelPanel2 {
-    background-color: #45b7d1;
-}
-
-/* Light blue */
-.wheelPanel3 {
-    background-color: #e94560;
-}
-
-/* Bright red */
-.wheelPanel4 {
-    background-color: #16213e;
-}
-
-/* Dark blue */
-.punishment {
+    color: var(--accent-color);
+  }
+  
+  .punishment {
     text-align: center;
     margin-top: 1rem;
     color: #e94560;
-    /* Bright red color for punishment */
     font-weight: bold;
-}
-
-.laughingFace {
+  }
+  
+  .laughingFace {
     font-size: 24px;
     margin: 0 10px;
-}
+  }
+  
+  @media (max-width: 768px) {
+    .body {
+      padding: 1rem;
+    }
+  
+    .header {
+      font-size: 1.5rem;
+    }
+  
+    .card,
+    .wheelWrapper {
+      padding: 1rem;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+  
+    .title {
+      font-size: 1.2rem;
+    }
+  
+    .avatar {
+      width: 80px;
+      height: 80px;
+    }
+  
+    .loserName {
+      font-size: 1rem;
+    }
+  
+    .wheelContainer {
+      max-width: 100%;
+      width: 100%;
+    }
+  }

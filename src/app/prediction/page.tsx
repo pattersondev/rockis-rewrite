@@ -266,7 +266,7 @@ const PredictionPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Team Predictions</h1>
+      <h1 className={styles.title}>Team Projections</h1>
       <div className={styles.chartsContainer}>
         <div className={styles.chartWrapper}>
           {renderBarChart(

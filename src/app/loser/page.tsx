@@ -175,7 +175,7 @@ export default function Loser() {
         gutterBottom
         className={styles.header}
       >
-        Wheel spin Tuesday's at 8pm EST.
+        Wheel spin right after MNF.
       </Typography>
       <div className={styles.container}>
         <Card className={styles.card}>
