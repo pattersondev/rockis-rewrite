@@ -208,8 +208,8 @@ const PredictionPage: React.FC = () => {
         {
           label: title,
           data,
-          backgroundColor: "rgba(75, 192, 192, 0.6)",
-          borderColor: "rgba(75, 192, 192, 1)",
+          backgroundColor: "rgba(187, 134, 252, 0.6)",
+          borderColor: "rgba(187, 134, 252, 1)",
           borderWidth: 1,
         },
       ],
@@ -226,10 +226,14 @@ const PredictionPage: React.FC = () => {
       plugins: {
         legend: {
           position: "top" as const,
+          labels: {
+            color: "#e0e0e0",
+          },
         },
         title: {
           display: true,
           text: title,
+          color: "#e0e0e0",
         },
       },
       scales: {
@@ -239,6 +243,15 @@ const PredictionPage: React.FC = () => {
           title: {
             display: true,
             text: "Chance (%)",
+            color: "#e0e0e0",
+          },
+          ticks: {
+            color: "#e0e0e0",
+          },
+        },
+        y: {
+          ticks: {
+            color: "#e0e0e0",
           },
         },
       },
