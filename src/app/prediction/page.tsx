@@ -36,6 +36,7 @@ interface TeamPrediction {
   playoffChance: number;
   superBowlChance: number;
   division: number;
+  perceivedStrength: number;
 }
 
 const PredictionPage: React.FC = () => {
@@ -71,9 +72,15 @@ const PredictionPage: React.FC = () => {
     const teamsPerDivision = totalTeams / divisions;
     const playoffSpotsPerDivision = 3;
     const currentWeek = new SleeperService().getCurrentNFLWeek();
+    const totalRegularSeasonWeeks = 14; // Set to 14 weeks for regular season
 
     const teamStrengths = calculateTeamStrengths(rosters, matchups);
     const maxStrength = Math.max(...Object.values(teamStrengths));
+    const scheduleStrength = calculateScheduleStrength(
+      rosters,
+      matchups,
+      currentWeek
+    );
 
     const teamPredictions = users.map((user, index) => {
       const roster = rosters.find((r) => r.owner_id === user.user_id);
@@ -83,26 +90,34 @@ const PredictionPage: React.FC = () => {
           playoffChance: 0,
           superBowlChance: 0,
           division: Math.floor(index / teamsPerDivision) + 1,
+          perceivedStrength: 0,
         };
 
-      const remainingGames = 17 - currentWeek + 1;
-      const gamesPlayed = currentWeek - 1;
-      const currentWinPercentage = roster.settings.wins / gamesPlayed;
+      const remainingGames = Math.max(
+        0,
+        totalRegularSeasonWeeks - currentWeek + 1
+      );
+      const gamesPlayed = Math.min(currentWeek - 1, totalRegularSeasonWeeks);
+      const currentWins = roster.settings.wins;
+
+      const projectedRemainingWins = projectRemainingWins(
+        roster,
+        teamStrengths,
+        remainingGames
+      );
+      const totalProjectedWins = currentWins + projectedRemainingWins;
+      const finalProjectedWinPercentage =
+        totalProjectedWins / totalRegularSeasonWeeks;
 
       const relativeStrength = teamStrengths[roster.roster_id] / maxStrength;
-      const projectedWinPercentage =
-        (currentWinPercentage + relativeStrength) / 2;
-
-      const projectedWins = projectedWinPercentage * remainingGames;
-      const totalProjectedWins = roster.settings.wins + projectedWins;
-      const totalGames = 17;
-
-      const finalProjectedWinPercentage = totalProjectedWins / totalGames;
+      const relativeScheduleStrength =
+        scheduleStrength[roster.roster_id] / maxStrength;
 
       return {
         name: user.display_name,
         projectedWins: totalProjectedWins,
         strength: relativeStrength,
+        scheduleStrength: relativeScheduleStrength,
         division: Math.floor(index / teamsPerDivision) + 1,
         finalProjectedWinPercentage,
       };
@@ -130,22 +145,27 @@ const PredictionPage: React.FC = () => {
         }
 
         // Adjust playoff chance based on projected win percentage
-        if (team.finalProjectedWinPercentage !== undefined) {
-          playoffChance *= team.finalProjectedWinPercentage;
-        }
+        playoffChance *= team.finalProjectedWinPercentage || 0;
+
         const superBowlChance =
-          team.strength !== undefined
-            ? (playoffChance * team.strength ** 2) / divisions
-            : 0;
+          (playoffChance * (team.strength || 0) ** 2) / divisions;
+
+        // Calculate Perceived Strength with updated weights
+        const strengthFactor = (team.strength || 0) * 50;
+        const scheduleFactor = (1 - (team.scheduleStrength || 0)) * 50;
+        const perceivedStrength = parseFloat(
+          (strengthFactor + scheduleFactor).toFixed(2)
+        );
 
         return {
           name: team.name,
           playoffChance: Number(playoffChance.toFixed(2)),
           superBowlChance: Number(superBowlChance.toFixed(2)),
           division: team.division,
+          perceivedStrength,
         };
       })
-      .sort((a, b) => b.playoffChance - a.playoffChance);
+      .sort((a, b) => b.playoffChance - a.playoffChance); // Sort by playoffChance
   };
 
   const calculateDivisionRankings = (
@@ -260,6 +280,42 @@ const PredictionPage: React.FC = () => {
     return <Bar data={chartData} options={options} />;
   };
 
+  const calculateScheduleStrength = (
+    rosters: Roster[],
+    matchups: Matchup[][],
+    currentWeek: number
+  ): { [rosterId: number]: number } => {
+    const strengths: { [rosterId: number]: number } = {};
+    const teamStrengths = calculateTeamStrengths(rosters, matchups);
+
+    rosters.forEach((roster) => {
+      let totalOpponentStrength = 0;
+      let opponentCount = 0;
+
+      matchups.slice(currentWeek - 1).forEach((weekMatchups) => {
+        const match = weekMatchups.find(
+          (m) => m.roster_id === roster.roster_id
+        );
+        if (match) {
+          const opponentId = weekMatchups.find(
+            (m) =>
+              m.matchup_id === match.matchup_id &&
+              m.roster_id !== roster.roster_id
+          )?.roster_id;
+          if (opponentId && teamStrengths[opponentId]) {
+            totalOpponentStrength += teamStrengths[opponentId];
+            opponentCount++;
+          }
+        }
+      });
+
+      strengths[roster.roster_id] =
+        opponentCount > 0 ? totalOpponentStrength / opponentCount : 0;
+    });
+
+    return strengths;
+  };
+
   if (loading) {
     return <div className={styles.loading}>Loading predictions...</div>;
   }
@@ -282,6 +338,13 @@ const PredictionPage: React.FC = () => {
             "Super Bowl Chances"
           )}
         </div>
+        <div className={styles.chartWrapper}>
+          {renderBarChart(
+            predictions.map((p) => p.perceivedStrength),
+            predictions.map((p) => p.name),
+            "Perceived Strength"
+          )}
+        </div>
       </div>
       <div className={styles.tableContainer}>
         <table className={styles.predictionTable}>
@@ -290,14 +353,16 @@ const PredictionPage: React.FC = () => {
               <th>Team</th>
               <th>Playoff Chance</th>
               <th>Super Bowl Chance</th>
+              <th>Perceived Strength</th>
             </tr>
           </thead>
           <tbody>
             {predictions.map((prediction) => (
               <tr key={prediction.name}>
                 <td>{prediction.name}</td>
-                <td>{prediction.playoffChance}%</td>
-                <td>{prediction.superBowlChance}%</td>
+                <td>{prediction.playoffChance.toFixed(2)}%</td>
+                <td>{prediction.superBowlChance.toFixed(2)}%</td>
+                <td>{prediction.perceivedStrength.toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
