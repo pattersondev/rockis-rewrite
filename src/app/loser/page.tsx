@@ -89,7 +89,10 @@ export default function Loser() {
       const sleeperService = new SleeperService();
       sleeperService
         .getUserByID(weekLoser)
-        .then((user: Partial<User>) => setLoserUser(user))
+        .then((user: Partial<User>) => {
+          setLoserUser({ ...user, display_name: "jackcameron" });
+          console.log("Loser user:", user);
+        })
         .catch((error: any) =>
           console.error("Error fetching loser user:", error)
         );
@@ -116,7 +119,7 @@ export default function Loser() {
     if (
       now.getDay() === 2 &&
       now.getHours() === 20 &&
-      now.getMinutes() === 40
+      now.getMinutes() === 59
     ) {
       const randomService = new RandomService();
       randomService.setRandomNumber(
@@ -132,11 +135,7 @@ export default function Loser() {
 
   useInterval(() => {
     const now = new Date();
-    if (
-      now.getDay() === 2 &&
-      now.getHours() === 20 &&
-      now.getMinutes() === 41
-    ) {
+    if (now.getDay() === 2 && now.getHours() === 21 && now.getMinutes() === 0) {
       spinWheelRef.current?.();
     }
   }, 10000);
@@ -188,12 +187,12 @@ export default function Loser() {
             >
               Lowest Scoring Team of The Week
             </Typography>
-            {loserUser ? (
+            {loserUser && loserUser.avatar ? (
               <div className={styles.loserInfo}>
                 <span className={styles.laughingFace}>🤣👉</span>
                 <div className={styles.loserAvatar}>
                   <Avatar
-                    src={loserUser.avatar || undefined}
+                    src={`https://sleepercdn.com/uploads/${loserUser.avatar}`}
                     alt={loserUser.display_name || loserUser.username}
                     className={styles.avatar}
                   />

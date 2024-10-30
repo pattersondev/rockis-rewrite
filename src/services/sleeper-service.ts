@@ -14,6 +14,7 @@ export interface User {
     avatar: string;
     metadata: {
         team_name: string;
+        avatar: string;
     };
     is_owner: boolean;
 }
