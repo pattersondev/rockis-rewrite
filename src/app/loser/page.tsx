@@ -90,7 +90,7 @@ export default function Loser() {
       sleeperService
         .getUserByID(weekLoser)
         .then((user: Partial<User>) => {
-          setLoserUser({ ...user, display_name: "jackcameron" });
+          setLoserUser(user);
           console.log("Loser user:", user);
         })
         .catch((error: any) =>
@@ -116,11 +116,7 @@ export default function Loser() {
 
   useInterval(() => {
     const now = new Date();
-    if (
-      now.getDay() === 2 &&
-      now.getHours() === 20 &&
-      now.getMinutes() === 59
-    ) {
+    if (now.getDay() === 1 && now.getHours() === 21 && now.getMinutes() === 9) {
       const randomService = new RandomService();
       randomService.setRandomNumber(
         Math.floor(Math.random() * wheelOptions.length)
@@ -135,7 +131,11 @@ export default function Loser() {
 
   useInterval(() => {
     const now = new Date();
-    if (now.getDay() === 2 && now.getHours() === 21 && now.getMinutes() === 0) {
+    if (
+      now.getDay() === 1 &&
+      now.getHours() === 21 &&
+      now.getMinutes() === 10
+    ) {
       spinWheelRef.current?.();
     }
   }, 10000);
